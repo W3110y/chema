@@ -23,6 +23,18 @@ public class GestorTeatros {
             Teatro t = new Teatro(nombre, direccion);
             mapaTeatros.put(nombre, t);			
         }
+    }
+    public void nuevoEspectaculo(String nomEsp, String grupo, LocalDate fecha, int prTicket) {
+        // TODO Auto-generated method stub
+        
+    }
+    public Espectaculo[] buscarEspectaculos(String ciudad, LocalDate fechaIni, LocalDate fechaFin) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    public String disponibilidadEspectaculo(LocalDate fecha) {
+        // TODO Auto-generated method stub
+        return null;
     }	
 
 }
