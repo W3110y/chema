@@ -1,3 +1,4 @@
+package teleteatros.usuarios;
 import java.time.LocalDate;
 
 public abstract class Teatro{

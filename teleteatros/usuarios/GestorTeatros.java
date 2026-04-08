@@ -1,3 +1,9 @@
+package teleteatros.usuarios;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+import teleteatros.excepciones.TeatroException;
+
 public class GestorTeatros {
     
     // mapa de teatros del sistema, indexados por su nombre (único)
@@ -17,12 +23,7 @@ public class GestorTeatros {
      */
     public void crearTeatro(String nombre, String direccion) 
             throws TeatroException {
-        if (mapaTeatros.containsKey(nombre)) // existe el nombre?
-            throw new TeatroException("Teatro \"" + nombre + "\" ya existe");
-        else {
-            Teatro t = new Teatro(nombre, direccion);
-            mapaTeatros.put(nombre, t);			
-        }
+
     }
     public void nuevoEspectaculo(String nomEsp, String grupo, LocalDate fecha, int prTicket) {
         // TODO Auto-generated method stub

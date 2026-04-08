@@ -2,18 +2,18 @@ package teleteatros.usuarios;
 
 public class Butaca {
     private int fila;
-    private int columna;
+    private int col;
 
-    public Butaca(int fila, int columna) {
+    public Butaca(int fila, int col) {
         this.fila = fila;
-        this.columna = columna;
+        this.col = col;
     }
 
     public int getFila() {
         return fila;
     }
 
-    public int getColumna() {
-        return columna;
+    public int getCol() {
+        return col;
     }
 }
