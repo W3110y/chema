@@ -72,7 +72,7 @@ public class Teatro{
         espectaculos.add(nuevoEsp);
     }
     public Espectaculo[] buscarEspectaculos(String ciudad, LocalDate fechaIni, LocalDate fechaFin) {
-        if(ciudad == null || !this.ciudad.equalsIgnoreCase(ciudad)) {
+        if(ciudad != null && !this.ciudad.equalsIgnoreCase(ciudad)) {
             return new Espectaculo[0]; // No es el teatro que buscamos
         }
         ArrayList<Espectaculo> encontrados = new ArrayList<>();
