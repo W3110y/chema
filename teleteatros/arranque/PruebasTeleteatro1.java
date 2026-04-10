@@ -169,7 +169,7 @@ public class PruebasTeleteatro1 {
 
  */
 
- private static void casosUsoIter1(GestorUsuarios gu) {//, GestorTeatros gt) {
+ private static void casosUsoIter1(GestorUsuarios gu, GestorTeatros gt) {
 
 
  System.out.println("/// RECARGAR SALDO ///");
@@ -201,7 +201,7 @@ public class PruebasTeleteatro1 {
  System.out.println(cli.toString());
 
 
-/* System.out.println("\n\n/// CREAR TEATROS ///\n");
+ System.out.println("\n\n/// CREAR TEATROS ///\n");
 
  System.out.println("creación de varios teatros");
 
@@ -323,7 +323,7 @@ public class PruebasTeleteatro1 {
 
  System.out.println(e.getMessage());
 
- }*/
+ }
 
  }
 
