@@ -1,4 +1,4 @@
-package teleteatros.usuarios;
+package teleteatros.teatros;
 
 import java.time.LocalDate;
 

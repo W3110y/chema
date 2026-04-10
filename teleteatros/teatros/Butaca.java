@@ -1,4 +1,4 @@
-package teleteatros.usuarios;
+package teleteatros.teatros;
 
 public class Butaca {
     private int fila;

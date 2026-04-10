@@ -10,7 +10,7 @@ import teleteatros.excepciones.TeatroException;
 
 import teleteatros.excepciones.UsuarioException;
 
-//import teleteatros.teatros.GestorTeatros;
+import teleteatros.teatros.GestorTeatros;
 
 import teleteatros.usuarios.Cliente;
 
@@ -46,7 +46,7 @@ public class PruebasTeleteatro1 {
 
  // Instancio el gestor de teatros
 
-// GestorTeatros gt = new GestorTeatros();
+ GestorTeatros gt = new GestorTeatros();
 
 
  System.out.println("///////////////////////////");
@@ -64,7 +64,7 @@ public class PruebasTeleteatro1 {
 
  System.out.println("///////////////////////////\n");
 
- // casosUsoIter1(gu, gt);
+ casosUsoIter1(gu, gt);
 
  }
 
