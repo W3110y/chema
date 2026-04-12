@@ -23,7 +23,7 @@ public class Espectaculo {
         for (int f = 0; f < butacas.length; f++) {
             for (int c = 0; c < butacas[f].length; c++) {
                 // Instanciamos el ticket asociándole su butaca individual exacta
-                this.tickets[f][c] = new Ticket(0, butacas[f][c]);
+                this.tickets[f][c] = new Ticket(0, butacas[f][c], this);
             }
         }
     }
