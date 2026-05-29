@@ -24,6 +24,8 @@ public class Ticket {
      */
     private Espectaculo espectaculo;
 
+    private teleteatros.usuarios.Cliente propietario;
+
     /**
      * Constructor de la clase Ticket.
      * Inicializa el estado del ticket y establece sus relaciones obligatorias.
@@ -43,6 +45,20 @@ public class Ticket {
      */
     public int getEstado() {
         return estado;
+    }
+
+    // Añade el setter para el estado (antes solo teníamos el getEstado)
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+    // Añade los getters y setters del propietario
+    public teleteatros.usuarios.Cliente getPropietario() {
+        return propietario;
+    }
+
+    public void setPropietario(teleteatros.usuarios.Cliente propietario) {
+        this.propietario = propietario;
     }
 
 }

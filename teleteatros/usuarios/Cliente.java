@@ -1,5 +1,11 @@
 package teleteatros.usuarios;
 
+import java.util.List;
+import java.util.ArrayList;
+import teleteatros.teatros.Ticket;
+
+private List<Ticket> misTickets;
+
 public class Cliente extends Usuario{
 	
     private int saldo;
@@ -27,6 +33,14 @@ public class Cliente extends Usuario{
 
     public void incrementarSaldo(int i) {
         saldo += i;
+    }
+
+    public void addTicket(Ticket t) {
+        this.misTickets.add(t);
+    }
+    
+    public List<Ticket> getMisTickets() {
+        return this.misTickets;
     }
 
 }
