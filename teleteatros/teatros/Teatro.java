@@ -179,4 +179,109 @@ public class Teatro {
                       
         return info;
     }
+
+    /**
+     * Procesa la reserva de tickets, validando disponibilidad y reglas de negocio.
+     * @param fecha Fecha del espectáculo.
+     * @param butacasReservar Array con los números de butaca solicitados.
+     * @param cliente El cliente que realiza la operación.
+     * @throws TeatroException Si se incumple alguna regla o los tickets no están libres.
+     */
+    public void reservarTickets(LocalDate fecha, int[] butacasReservar, teleteatros.usuarios.Cliente cliente) throws TeatroException {
+        Espectaculo espEncontrado = null;
+        
+        // 1. Buscamos el espectáculo programado para esa fecha
+        for (Espectaculo e : this.espectaculos) {
+            if (e.getFecha().equals(fecha)) {
+                espEncontrado = e;
+                break;
+            }
+        }
+        
+        // Si no existe el espectáculo, la reserva falla
+        if (espEncontrado == null) {
+            throw new TeatroException("No hay espectáculos programados en el teatro #" + this.idt + " el " + fecha);
+        }
+
+        // 2. Validar que no supera el máximo de 4 tickets por espectáculo (incluyendo previas)
+        int ticketsYaComprados = cliente.contarTicketsDeEspectaculo(espEncontrado);
+        if (ticketsYaComprados + butacasReservar.length > 4) {
+            throw new TeatroException("No puede hacerse la reserva: el cliente superaría el máximo de tickets por espectáculo");
+        }
+
+        // Extraemos la matriz de tickets del espectáculo
+        teleteatros.teatros.Ticket[][] matrizTickets = espEncontrado.getTickets();
+
+        // 3. Validar disponibilidad de TODAS las butacas pedidas ANTES de modificar nada
+        for (int idButaca : butacasReservar) {
+            // Conversión matemática de array unidimensional a matriz bidimensional
+            int f = idButaca / this.numCols;
+            int c = idButaca % this.numCols;
+            
+            // Verificamos por seguridad que el ID no se salga de los límites físicos del teatro
+            if (f < 0 || f >= this.numFilas || c < 0 || c >= this.numCols) {
+                 throw new TeatroException("El ticket #" + idButaca + " no existe en este teatro");
+            }
+            
+            // Si el estado no es 0 (Libre), abortamos la operación
+            if (matrizTickets[f][c].getEstado() != 0) { 
+                throw new TeatroException("El ticket #" + idButaca + " no está disponible");
+            }
+        }
+
+        // 4. Si llegamos aquí, la reserva es 100% legal. Aplicamos los cambios de estado.
+        for (int idButaca : butacasReservar) {
+            int f = idButaca / this.numCols;
+            int c = idButaca % this.numCols;
+            
+            teleteatros.teatros.Ticket t = matrizTickets[f][c];
+            t.setEstado(1);             // Cambia a estado Reservado (1)
+            t.setPropietario(cliente);  // El ticket guarda la referencia de su dueño
+            cliente.addTicket(t);       // El cliente guarda el ticket en su historial
+        }
+    }
+
+    public void comprarTickets(LocalDate fecha, int[] butacasComprar, teleteatros.usuarios.Cliente cliente) throws TeatroException {
+        
+        // 1. ¡REUTILIZACIÓN! Hacemos la reserva primero. 
+        // Si hay algún problema de disponibilidad o límite, lanzará la excepción desde ahí y se cortará la ejecución.
+        // Si pasa de esta línea, los tickets YA ESTÁN vinculados al cliente y en estado Reservado (1).
+        this.reservarTickets(fecha, butacasComprar, cliente);
+
+        // 2. Recuperamos el espectáculo para saber el precio
+        Espectaculo espEncontrado = null;
+        for (Espectaculo e : this.espectaculos) {
+            if (e.getFecha().equals(fecha)) {
+                espEncontrado = e;
+                break;
+            }
+        }
+
+        // 3. Calculamos el coste total
+        int precioTotal = espEncontrado.getPrecioBase() * butacasComprar.length;
+
+        // 4. Comprobamos si tiene dinero suficiente
+        if (cliente.getSaldo() < precioTotal) {
+            // El truco está aquí: lanzamos la excepción con el texto exacto que pide el PDF.
+            // Como ya ejecutamos "reservarTickets", los asientos quedan bloqueados para él.
+            throw new TeatroException("El cliente no tiene saldo suficiente para la compra => LOS BILLETES HAN SIDO RESERVADOS");
+        }
+
+        // 5. Si llegamos aquí, ¡TIENE SALDO! Consolidamos la compra.
+        cliente.decrementarSaldo(precioTotal);
+        
+        teleteatros.teatros.Ticket[][] matrizTickets = espEncontrado.getTickets();
+        
+        for (int idButaca : butacasComprar) {
+            int f = idButaca / this.numCols;
+            int c = idButaca % this.numCols;
+            
+            // Cambiamos el estado a Comprado (suponiendo que es el número 2)
+            matrizTickets[f][c].setEstado(2);
+        }
+    }
+
+    public java.util.ArrayList<Espectaculo> getEspectaculos() {
+        return espectaculos;
+    }
 }

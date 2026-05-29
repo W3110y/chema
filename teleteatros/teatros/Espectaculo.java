@@ -131,4 +131,8 @@ public class Espectaculo {
                "Fecha: " + fecha + "\n" +
                "Precio ticket: " + prTicket;
     }
+
+    public int getPrecioBase() {
+        return prTicket;
+    }
 }

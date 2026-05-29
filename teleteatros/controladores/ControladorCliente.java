@@ -58,22 +58,46 @@ public class ControladorCliente {
     }
 
     public void comprarTickets(int idt, LocalDate fecha, int[] tickets) throws UsuarioException, TeatroException {
-        if (cliente == null) throw new UsuarioException("Autenticación requerida");
-        // TODO: Delegar compra en GestorTeatros
+        // 1. Validaciones básicas
+        if (cliente == null) {
+            throw new UsuarioException("Autenticación requerida");
+        }
+        if (cliente.tieneReservaEnCurso()) {
+            throw new TeatroException("El cliente ya tiene una reserva en curso");
+        }
+        
+        // 2. Delegamos la compra al gestor
+        gt.comprarTickets(idt, fecha, tickets, cliente);
+    }
     }
 
     public void comprarReserva() throws UsuarioException, TeatroException {
-        if (cliente == null) throw new UsuarioException("Autenticación requerida");
-        // TODO: Delegar compra de reserva en GestorTeatros
+        // 1. Validar que hay un cliente logueado
+        if (cliente == null) {
+            throw new UsuarioException("Autenticación requerida");
+        }
+        
+        // 2. Delegamos la lógica directamente en el cliente
+        cliente.comprarReserva();
     }
 
     public void anularReserva() throws UsuarioException, TeatroException {
-        if (cliente == null) throw new UsuarioException("Autenticación requerida");
-        // TODO: Delegar anulación en GestorTeatros
+        // 1. Validar que hay un cliente logueado
+        if (cliente == null) {
+            throw new UsuarioException("Autenticación requerida");
+        }
+        
+        // 2. Delegamos la lógica directamente en el cliente
+        cliente.anularReserva();
     }
 
     public String informacionTickets() throws UsuarioException {
-        if (cliente == null) throw new UsuarioException("Autenticación requerida");
-        return ""; // TODO: Recuperar y formatear la lista de tickets del cliente
+        // 1. Validar autenticación
+        if (cliente == null) {
+            throw new UsuarioException("Autenticación requerida");
+        }
+        
+        // 2. Delegar la construcción del texto al GestorTeatros
+        return gt.informacionTickets(cliente);
     }
 }

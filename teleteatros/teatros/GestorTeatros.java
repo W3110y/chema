@@ -145,7 +145,7 @@ public class GestorTeatros {
         // 3. Delegamos el trabajo de búsqueda y dibujo en la propia clase Teatro
         return t.disponibilidadEspectaculo(fecha);
     }
-    
+
     /**
      * Delega la petición de reserva de tickets al teatro correspondiente.
      * @param idt Identificador del teatro.
@@ -166,5 +166,82 @@ public class GestorTeatros {
         
         // 3. Si existe, le pasamos la patata caliente al teatro
         t.reservarTickets(fecha, butacas, cliente);
-    }   
+    }
+
+    public void comprarTickets(int idt, LocalDate fecha, int[] butacas, teleteatros.usuarios.Cliente cliente) throws TeatroException {
+        Teatro t = teatros.get(idt);
+        if (t == null) {
+            throw new TeatroException("No existe un teatro con el identificador #" + idt);
+        }
+        t.comprarTickets(fecha, butacas, cliente);
+    }
+
+    /**
+     * Genera un informe en texto con todos los tickets de un cliente.
+     */
+    public String informacionTickets(teleteatros.usuarios.Cliente cliente) {
+        StringBuilder sb = new StringBuilder();
+        
+        // 1. Extraer los espectáculos ÚNICOS para los que el cliente tiene entrada
+        java.util.List<Teatro> listaTeatros = new java.util.ArrayList<>(teatros.values());
+        java.util.List<teleteatros.teatros.Espectaculo> espectaculosDelCliente = new java.util.ArrayList<>();
+        
+        for (teleteatros.teatros.Ticket t : cliente.getMisTickets()) {
+            if (!espectaculosDelCliente.contains(t.getEspectaculo())) {
+                espectaculosDelCliente.add(t.getEspectaculo());
+            }
+        }
+        
+        // 2. Por cada espectáculo, buscamos su teatro y generamos el bloque de texto
+        for (teleteatros.teatros.Espectaculo e : espectaculosDelCliente) {
+            
+            // Buscamos el teatro al que pertenece este espectáculo
+            Teatro teatroDelEsp = null;
+            for (Teatro t : listaTeatros) {
+                if (t.getEspectaculos().contains(e)) {
+                    teatroDelEsp = t;
+                    break;
+                }
+            }
+            
+            // Imprimimos la cabecera (Igual que en buscarEspectaculos)
+            sb.append("Espectáculo \"").append(e.getNombre()).append("\"\n");
+            if (teatroDelEsp != null) {
+                sb.append("Teatro #").append(teatroDelEsp.getIdt()).append(" ")
+                  .append(teatroDelEsp.getNombre()).append(" (")
+                  .append(teatroDelEsp.getCiudad()).append(")\n");
+            }
+            sb.append("Grupo: ").append(e.getGrupo()).append("\n");
+            sb.append("Fecha: ").append(e.getFecha()).append("\n");
+            sb.append("Precio ticket: ").append(e.getPrecioTicket()).append("\n");
+            
+            // 3. Reconstruir los números de butaca
+            java.util.List<String> comprados = new java.util.ArrayList<>();
+            java.util.List<String> reservados = new java.util.ArrayList<>();
+            int numCols = e.getTickets()[0].length; // Rescatamos las columnas para la fórmula
+            
+            for (teleteatros.teatros.Ticket t : cliente.getMisTickets()) {
+                if (t.getEspectaculo().equals(e)) {
+                    // FÓRMULA INVERSA: (fila * columnas) + columna = ID original
+                    int idButaca = (t.getButaca().getFila() * numCols) + t.getButaca().getCol();
+                    
+                    if (t.getEstado() == 2) {
+                        comprados.add(String.valueOf(idButaca));
+                    } else if (t.getEstado() == 1) {
+                        reservados.add(String.valueOf(idButaca));
+                    }
+                }
+            }
+            
+            // 4. Formatear con comas
+            if (!comprados.isEmpty()) {
+                sb.append("Tickets comprados: ").append(String.join(",", comprados)).append("\n");
+            }
+            if (!reservados.isEmpty()) {
+                sb.append("Tickets reservados: ").append(String.join(",", reservados)).append("\n");
+            }
+        }
+        
+        return sb.toString();
+    }
 }

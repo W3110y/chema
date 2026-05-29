@@ -61,4 +61,9 @@ public class Ticket {
         this.propietario = propietario;
     }
 
+    public teleteatros.teatros.Butaca getButaca() {
+        return butaca;
+    }
+
+    
 }

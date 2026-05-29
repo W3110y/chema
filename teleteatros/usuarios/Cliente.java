@@ -75,4 +75,69 @@ public class Cliente extends Usuario{
         return contador;
     }
 
+    public double getSaldo() {
+        return saldo; // O el nombre que le hayas puesto a tu variable de dinero
+    }
+
+    public void decrementarSaldo(double cantidad) {
+        this.saldo -= cantidad;
+    }
+
+    /**
+     * Hace efectiva la compra de todos los tickets que el cliente tiene en estado Reservado.
+     * @throws TeatroException Si no tiene reservas o no tiene saldo.
+     */
+    public void comprarReserva() throws teleteatros.excepciones.TeatroException {
+        // 1. Verificamos que tenga algo que comprar
+        if (!tieneReservaEnCurso()) {
+            throw new teleteatros.excepciones.TeatroException("El cliente NO tiene una reserva en curso");
+        }
+        
+        // 2. Calculamos el coste total de la reserva recopilando los tickets implicados
+        int costeTotal = 0;
+        List<teleteatros.teatros.Ticket> ticketsReservados = new ArrayList<>();
+        
+        for (teleteatros.teatros.Ticket t : misTickets) {
+            if (t.getEstado() == 1) { // 1 = Reservado
+                ticketsReservados.add(t);
+                costeTotal += t.getEspectaculo().getPrecioBase();
+            }
+        }
+        
+        // 3. Verificamos el saldo
+        if (this.saldo < costeTotal) {
+            throw new teleteatros.excepciones.TeatroException("El cliente no tiene saldo suficiente para comprar la reserva");
+        }
+        
+        // 4. Ejecutamos la compra: cobramos y cambiamos estados
+        this.decrementarSaldo(costeTotal);
+        
+        for (teleteatros.teatros.Ticket t : ticketsReservados) {
+            t.setEstado(2); // 2 = Comprado
+        }
+    }
+
+    /**
+     * Cancela la reserva actual, liberando los tickets para que otros puedan comprarlos.
+     * @throws TeatroException Si no tiene reservas activas.
+     */
+    public void anularReserva() throws teleteatros.excepciones.TeatroException {
+        if (!tieneReservaEnCurso()) {
+            throw new teleteatros.excepciones.TeatroException("El cliente NO tiene una reserva en curso");
+        }
+        
+        // Lista temporal para guardar los tickets que vamos a quitarle al cliente
+        List<teleteatros.teatros.Ticket> aBorrar = new ArrayList<>();
+        
+        for (teleteatros.teatros.Ticket t : misTickets) {
+            if (t.getEstado() == 1) { // 1 = Reservado
+                t.setEstado(0);         // Vuelven a estar Libres (0)
+                t.setPropietario(null); // Ya no tienen dueño
+                aBorrar.add(t);         // Lo marcamos para borrar
+            }
+        }
+        
+        // Eliminamos los tickets liberados del historial del cliente
+        misTickets.removeAll(aBorrar);
+    }
 }
