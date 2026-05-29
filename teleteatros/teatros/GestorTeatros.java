@@ -144,5 +144,27 @@ public class GestorTeatros {
         
         // 3. Delegamos el trabajo de búsqueda y dibujo en la propia clase Teatro
         return t.disponibilidadEspectaculo(fecha);
+    }
+    
+    /**
+     * Delega la petición de reserva de tickets al teatro correspondiente.
+     * @param idt Identificador del teatro.
+     * @param fecha Fecha del espectáculo.
+     * @param butacas Array con los números de las butacas a reservar.
+     * @param cliente El cliente que solicita la reserva.
+     * @throws TeatroException Si el teatro no existe o falla alguna validación posterior.
+     */
+    public void reservarTickets(int idt, LocalDate fecha, int[] butacas, teleteatros.usuarios.Cliente cliente) throws TeatroException {
+        
+        // 1. Buscamos el teatro en nuestro mapa usando su ID
+        Teatro t = teatros.get(idt);
+        
+        // 2. Comprobamos si realmente existe
+        if (t == null) {
+            throw new TeatroException("No existe un teatro con el identificador #" + idt);
+        }
+        
+        // 3. Si existe, le pasamos la patata caliente al teatro
+        t.reservarTickets(fecha, butacas, cliente);
     }   
 }
