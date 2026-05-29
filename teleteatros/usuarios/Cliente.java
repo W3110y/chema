@@ -3,9 +3,12 @@ package teleteatros.usuarios;
 public class Cliente extends Usuario{
 	
     private int saldo;
+    List<Ticket> misTickets; 
+
     public Cliente(String l, String p, String n) {
         super(l, p, n);
         saldo = 0;
+        misTickets = new ArrayList<>();
     }
     /**
     * Método que devuelve una descripción del cliente
